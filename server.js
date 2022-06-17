@@ -18,7 +18,7 @@ const Chat = require('./model/Chatschema');
 
 //Get data by roomID
 app.get('/chat/:roomID', (req, res) => {
-  let { roomID } = req.params;
+  let { roomID  } = req.params;
 
   connect.then((db) => {
     Chat.find({ roomID: roomID }, (err, data) => {
@@ -28,11 +28,24 @@ app.get('/chat/:roomID', (req, res) => {
       res.json(data);
     });
   });
+
 });
 
 
 //check if user exist
+app.get('/check/:userName', (req, res) => {
+  let { userName } = req.params;
 
+  connect.then((db) => {
+    Chat.find({ username: userName }, (err, data) => {
+      if (err) {
+        res.status(500).json({ error: true, message: err.message });
+      }
+      res.json(data.length);
+    });
+  });
+
+});
 
 socket.on('connection', (socket) => {
   console.log('user connected');
