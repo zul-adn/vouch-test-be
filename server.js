@@ -11,9 +11,27 @@ var server = app.listen(5000, function(){
 
 const socket = io(server);
 
-// DB Conn
+// DB Connection
 const connect = require('./conf/Dbsetup');
 const Chat = require('./model/Chatschema');
+
+
+//Get data by roomID
+app.get('/chat/:roomID', (req, res) => {
+  let { roomID } = req.params;
+
+  connect.then((db) => {
+    Chat.find({ roomID: roomID }, (err, data) => {
+      if (err) {
+        res.status(500).json({ error: true, message: err.message });
+      }
+      res.json(data);
+    });
+  });
+});
+
+
+//check if user exist
 
 
 socket.on('connection', (socket) => {
