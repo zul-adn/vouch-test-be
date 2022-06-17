@@ -1,16 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const io = require('socket.io');
 
-app = express();
-app.use(cors());
-const port = 5000;
+var app = express();
+app.use(cors())
 
-const http = require('http').Server(app);
+var server = app.listen(5000, function(){
+    console.log("App Run on 5000")
+})
 
-
-const socket = io(http);
+const socket = io(server);
 
 // DB Conn
 const connect = require('./conf/Dbsetup');
@@ -33,7 +32,7 @@ socket.on('message', ({nama, message, room}) => {
     });
 
     connect.then((db) => {
-        let chatMessage = new Chat({ message: msg.message, username: msg.username, roomID: msg.roomID });
+        let chatMessage = new Chat({ message: message, username: nama, roomID: room });
         chatMessage.save();
       });
     });
@@ -41,6 +40,4 @@ socket.on('message', ({nama, message, room}) => {
 })
 
 
-http.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+
