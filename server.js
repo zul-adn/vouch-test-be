@@ -5,8 +5,8 @@ const io = require('socket.io');
 var app = express();
 app.use(cors())
 
-var server = app.listen(5000, function(){
-    console.log("App Run on 5000")
+var server = app.listen(5000, function () {
+  console.log("App Run on 5000")
 })
 
 const socket = io(server);
@@ -18,7 +18,7 @@ const Chat = require('./model/Chatschema');
 
 //Get data by roomID
 app.get('/chat/:roomID', (req, res) => {
-  let { roomID  } = req.params;
+  let { roomID } = req.params;
 
   connect.then((db) => {
     Chat.find({ roomID: roomID }, (err, data) => {
@@ -33,11 +33,11 @@ app.get('/chat/:roomID', (req, res) => {
 
 
 //check if user exist
-app.get('/check/:userName', (req, res) => {
-  let { userName } = req.params;
+app.get('/check/:roomID/:userName', (req, res) => {
+  let { userName, roomID } = req.params;
 
   connect.then((db) => {
-    Chat.find({ username: userName }, (err, data) => {
+    Chat.find({ username: userName, roomID:roomID }, (err, data) => {
       if (err) {
         res.status(500).json({ error: true, message: err.message });
       }
@@ -50,23 +50,23 @@ app.get('/check/:userName', (req, res) => {
 socket.on('connection', (socket) => {
   console.log('user connected');
 
-  socket.on("join-room", room =>{
+  socket.on("join-room", room => {
     socket.join(room.room)
-    console.log("join room "+room.room)
-})
+    console.log("join room " + room.room)
+  })
 
-socket.on('message', ({nama, message, room}) => {
-  
-    socket.to(room).emit("message",{
-        nama,
-        message,
+  socket.on('message', ({ nama, message, room }) => {
+
+    socket.to(room).emit("message", {
+      nama,
+      message,
     });
 
     connect.then((db) => {
-        let chatMessage = new Chat({ message: message, username: nama, roomID: room });
-        chatMessage.save();
-      });
+      let chatMessage = new Chat({ message: message, username: nama, roomID: room });
+      chatMessage.save();
     });
+  });
 
 })
 
