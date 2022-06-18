@@ -55,15 +55,15 @@ socket.on('connection', (socket) => {
     console.log("join room " + room.room)
   })
 
-  socket.on('message', ({ nama, message, room }) => {
+  socket.on('message', ({ usernama, message, room }) => {
 
     socket.to(room).emit("message", {
-      nama,
+      username,
       message,
     });
 
     connect.then((db) => {
-      let chatMessage = new Chat({ message: message, username: nama, roomID: room });
+      let chatMessage = new Chat({ message: message, username: username, roomID: room });
       chatMessage.save();
     });
   });
