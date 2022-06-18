@@ -55,7 +55,7 @@ socket.on('connection', (socket) => {
     console.log("join room " + room.room)
   })
 
-  socket.on('message', ({ usernama, message, room }) => {
+  socket.on('message', ({ username, message, room }) => {
 
     socket.to(room).emit("message", {
       username,
