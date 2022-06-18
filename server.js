@@ -38,9 +38,15 @@ app.get('/check/:roomID/:userName', (req, res) => {
   let { userName, roomID } = req.params;
 
   connect.then((db) => {
-    User.find({ username: userName, roomID:roomID }, (err, data) => {
+    User.find({ username: userName, roomID: roomID }, (err, data) => {
       if (err) {
         res.status(500).json({ error: true, message: err.message });
+      }
+      if (data.length === 0) {
+        connect.then((db) => {
+          let chatMessage = new User({ username: userName, roomID: roomID });
+          chatMessage.save();
+        });
       }
       res.json(data.length);
     });
