@@ -14,6 +14,7 @@ const socket = io(server);
 // DB Connection
 const connect = require('./conf/Dbsetup');
 const Chat = require('./model/Chatschema');
+const User = require('./model/Userschema');
 
 
 //Get data by roomID
@@ -37,7 +38,7 @@ app.get('/check/:roomID/:userName', (req, res) => {
   let { userName, roomID } = req.params;
 
   connect.then((db) => {
-    Chat.find({ username: userName, roomID:roomID }, (err, data) => {
+    User.find({ username: userName, roomID:roomID }, (err, data) => {
       if (err) {
         res.status(500).json({ error: true, message: err.message });
       }
